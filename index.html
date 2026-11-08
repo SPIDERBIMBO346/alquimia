@@ -1,0 +1,762 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alchemist Studio</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+    background:#090b10;
+    color:#e9e3d5;
+    font-family:Arial,sans-serif;
+}
+
+header{
+    padding:22px;
+    text-align:center;
+    border-bottom:1px solid #302b25;
+    background:#101116;
+}
+
+header h1{
+    font-family:Georgia,serif;
+    letter-spacing:5px;
+    color:#d7b77a;
+    font-size:25px;
+}
+
+header p{
+    color:#777;
+    font-size:11px;
+    letter-spacing:3px;
+    margin-top:8px;
+}
+
+.app{
+    max-width:1250px;
+    margin:auto;
+    padding:20px;
+    display:grid;
+    grid-template-columns:320px 1fr;
+    gap:20px;
+}
+
+.panel,.workspace{
+    background:#13151c;
+    border:1px solid #302e2b;
+    border-radius:12px;
+    padding:18px;
+    height:max-content;
+}
+
+.panel h2{
+    font-family:Georgia,serif;
+    color:#d7b77a;
+    font-size:17px;
+    margin-bottom:18px;
+}
+
+.group{margin-bottom:19px}
+
+label{
+    display:block;
+    font-size:11px;
+    color:#aaa;
+    margin-bottom:8px;
+    letter-spacing:1px;
+}
+
+select,input[type=text],textarea{
+    width:100%;
+    background:#090b10;
+    border:1px solid #39352f;
+    color:#eee;
+    padding:11px;
+    border-radius:6px;
+    outline:none;
+}
+
+textarea{
+    min-height:75px;
+    resize:vertical;
+    font-family:Arial,sans-serif;
+}
+
+input[type=range]{
+    width:100%;
+    accent-color:#c6a366;
+}
+
+input[type=color]{
+    width:100%;
+    height:38px;
+    background:#090b10;
+    border:1px solid #39352f;
+    padding:3px;
+    border-radius:6px;
+}
+
+.value{
+    float:right;
+    color:#d7b77a;
+}
+
+.check{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    color:#aaa;
+    font-size:12px;
+    margin:12px 0;
+}
+
+.check input{accent-color:#d7b77a}
+
+.buttons{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:9px;
+    margin-top:20px;
+}
+
+button{
+    border:1px solid #806944;
+    background:#272219;
+    color:#e5c68c;
+    padding:12px 8px;
+    border-radius:6px;
+    cursor:pointer;
+    font-size:11px;
+    letter-spacing:1px;
+    transition:.2s;
+}
+
+button:hover{
+    background:#51402a;
+    color:white;
+}
+
+button.primary{
+    grid-column:span 2;
+    background:#80623b;
+    color:white;
+}
+
+.workspace{min-width:0}
+
+.topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:15px;
+    color:#aaa;
+    font-size:11px;
+    letter-spacing:2px;
+}
+
+.stage{
+    width:100%;
+    aspect-ratio:1;
+    max-height:750px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background-color:#08090d;
+    background-image:
+      linear-gradient(45deg,#ffffff08 25%,transparent 25%),
+      linear-gradient(-45deg,#ffffff08 25%,transparent 25%),
+      linear-gradient(45deg,transparent 75%,#ffffff08 75%),
+      linear-gradient(-45deg,transparent 75%,#ffffff08 75%);
+    background-size:20px 20px;
+    border:1px solid #292929;
+    overflow:hidden;
+}
+
+svg{
+    width:100%;
+    height:100%;
+    display:block;
+}
+
+.footer{
+    color:#686868;
+    text-align:center;
+    font-size:10px;
+    margin-top:15px;
+    letter-spacing:2px;
+}
+
+small{
+    color:#777;
+    font-size:10px;
+    line-height:1.5;
+    display:block;
+    margin-top:6px;
+}
+
+@media(max-width:750px){
+    .app{
+        grid-template-columns:1fr;
+        padding:12px;
+    }
+    .workspace{grid-row:1}
+    .panel{grid-row:2}
+    header h1{font-size:20px}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>ALCHEMIST STUDIO</h1>
+    <p>GEOMETRY · ALCHEMY · TRANSMUTATION</p>
+</header>
+
+<main class="app">
+
+<section class="panel">
+
+    <h2>Configuración del círculo</h2>
+
+    <div class="group">
+        <label>TIPO DE DISEÑO</label>
+        <select id="type">
+            <option value="transmutation">Círculo de transmutación</option>
+            <option value="pentagram">Pentagrama</option>
+            <option value="hexagram">Hexagrama</option>
+            <option value="flower">Flor de la vida</option>
+            <option value="philosopher">Piedra filosofal</option>
+            <option value="elemental">Sello elemental</option>
+        </select>
+    </div>
+
+    <div class="group">
+        <label>COLOR DEL TRAZO</label>
+        <input type="color" id="color" value="#d5ad65">
+    </div>
+
+    <div class="group">
+        <label>COLOR DEL FONDO (SOLO VISTA PREVIA)</label>
+        <input type="color" id="background" value="#08090d">
+    </div>
+
+    <div class="group">
+        <label>GROSOR <span class="value" id="widthVal">2</span></label>
+        <input type="range" id="width" min="1" max="7" value="2">
+    </div>
+
+    <div class="group">
+        <label>ANILLOS <span class="value" id="ringsVal">4</span></label>
+        <input type="range" id="rings" min="1" max="8" value="4">
+    </div>
+
+    <div class="group">
+        <label>PUNTAS / DIVISIONES <span class="value" id="pointsVal">5</span></label>
+        <input type="range" id="points" min="3" max="12" value="5">
+    </div>
+
+    <div class="group">
+        <label>ROTACIÓN <span class="value" id="rotationVal">0°</span></label>
+        <input type="range" id="rotation" min="0" max="360" value="0">
+    </div>
+
+    <hr style="border-color:#302e2b;margin:22px 0">
+
+    <h2>Textos y símbolos</h2>
+
+    <div class="group">
+        <label>TEXTO ALREDEDOR DEL CÍRCULO</label>
+        <input type="text" id="customText"
+        placeholder="IGNIS · AETHER · TRANSMUTATIO">
+        <small>El texto se coloca siguiendo un anillo circular.</small>
+    </div>
+
+    <div class="group">
+        <label>TAMAÑO DEL TEXTO <span class="value" id="textSizeVal">20</span></label>
+        <input type="range" id="textSize" min="10" max="36" value="20">
+    </div>
+
+    <div class="group">
+        <label>SÍMBOLOS PERSONALIZADOS</label>
+        <textarea id="customSymbols"
+        placeholder="☉ ☽ ♁ ♆ ♄ ♃ ♀ ♂ ☿"></textarea>
+        <small>Escribe o pega los símbolos separados por espacios. También puedes usar letras y runas.</small>
+    </div>
+
+    <div class="group">
+        <label>TAMAÑO DE SÍMBOLOS <span class="value" id="symbolSizeVal">25</span></label>
+        <input type="range" id="symbolSize" min="12" max="50" value="25">
+    </div>
+
+    <div class="group">
+        <label>POSICIÓN DE SÍMBOLOS <span class="value" id="symbolRadiusVal">325</span></label>
+        <input type="range" id="symbolRadius" min="100" max="350" value="325">
+    </div>
+
+    <div class="group">
+        <label>SÍMBOLOS ALQUÍMICOS DISPONIBLES</label>
+        <div style="display:flex;flex-wrap:wrap;gap:7px" id="symbolPicker"></div>
+        <small>Toca un símbolo para añadirlo a tu diseño.</small>
+    </div>
+
+    <hr style="border-color:#302e2b;margin:22px 0">
+
+    <h2>Elementos visuales</h2>
+
+    <label class="check"><input type="checkbox" id="showStar" checked> Mostrar estrella</label>
+    <label class="check"><input type="checkbox" id="showSymbols" checked> Mostrar símbolos</label>
+    <label class="check"><input type="checkbox" id="showTicks" checked> Mostrar divisiones</label>
+    <label class="check"><input type="checkbox" id="showCenter" checked> Mostrar centro</label>
+    <label class="check"><input type="checkbox" id="showText" checked> Mostrar texto circular</label>
+
+    <div class="buttons">
+        <button id="reset">REINICIAR</button>
+        <button id="random">ALEATORIO</button>
+        <button class="primary" id="downloadPNG">DESCARGAR PNG TRANSPARENTE</button>
+        <button class="primary" id="downloadSVG">DESCARGAR SVG</button>
+    </div>
+
+</section>
+
+<section class="workspace">
+
+    <div class="topbar">
+        <span>ÁREA DE CREACIÓN</span>
+        <span>800 × 800</span>
+    </div>
+
+    <div class="stage">
+        <svg id="drawing" viewBox="0 0 800 800"
+        xmlns="http://www.w3.org/2000/svg"></svg>
+    </div>
+
+    <div class="footer">
+        ALCHEMIST STUDIO · CREATE YOUR OWN SEAL
+    </div>
+
+</section>
+
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+const svg = $('drawing');
+
+const defaults = {
+    type:'transmutation',
+    color:'#d5ad65',
+    background:'#08090d',
+    width:2,
+    rings:4,
+    points:5,
+    rotation:0,
+    customText:'',
+    textSize:20,
+    customSymbols:'',
+    symbolSize:25,
+    symbolRadius:325,
+    showStar:true,
+    showSymbols:true,
+    showTicks:true,
+    showCenter:true,
+    showText:true
+};
+
+const symbols = [
+    '☉','☽','☿','♀','♂','♃','♄','♁',
+    '♆','♇','⚝','⚕','⚯','⚶','⚷','⚸',
+    '△','▽','◇','○','◎','✡','✦','✧',
+    '☥','☯','☬','♜','♢','✴','✵','⊕',
+    '⊗','⊙','⊛','⊚','⟁','⌬','⟡','⋇',
+    'ᚠ','ᚢ','ᚦ','ᚨ','ᚱ','ᚲ','ᚷ','ᛉ'
+];
+
+function polar(radius,angle){
+    const a=angle*Math.PI/180;
+    return {
+        x:400+Math.cos(a)*radius,
+        y:400+Math.sin(a)*radius
+    };
+}
+
+function circle(r,opacity=1){
+    return `<circle cx="400" cy="400" r="${r}"
+    fill="none" stroke="currentColor"
+    stroke-width="var(--sw)" opacity="${opacity}"/>`;
+}
+
+function line(x1,y1,x2,y2,opacity=1){
+    return `<line x1="${x1}" y1="${y1}"
+    x2="${x2}" y2="${y2}"
+    stroke="currentColor"
+    stroke-width="var(--sw)" opacity="${opacity}"/>`;
+}
+
+function polygonPoints(count,radius,rotation=0){
+    return Array.from({length:count},(_,i)=>{
+        const p=polar(radius,rotation+i*360/count-90);
+        return `${p.x},${p.y}`;
+    }).join(' ');
+}
+
+function star(count,radius,skip=2,rotation=0){
+    let pts=[];
+    for(let i=0;i<count;i++){
+        pts.push(polar(radius,rotation-90+i*360/count));
+    }
+
+    let path='';
+    let index=0;
+
+    for(let i=0;i<count;i++){
+        path+=`${i===0?'M':'L'} ${pts[index].x} ${pts[index].y} `;
+        index=(index+skip)%count;
+    }
+
+    return `<path d="${path}Z" fill="none"
+    stroke="currentColor" stroke-width="var(--sw)"
+    stroke-linejoin="round"/>`;
+}
+
+function triangle(radius,rotation=0){
+    return `<polygon points="${polygonPoints(3,radius,rotation)}"
+    fill="none" stroke="currentColor"
+    stroke-width="var(--sw)"/>`;
+}
+
+function escapeHTML(str){
+    return str.replace(/[&<>"']/g,char=>({
+        '&':'&amp;',
+        '<':'&lt;',
+        '>':'&gt;',
+        '"':'&quot;',
+        "'":'&#39;'
+    })[char]);
+}
+
+function draw(){
+
+    const c=$('color').value;
+    const bg=$('background').value;
+    const sw=$('width').value;
+    const rings=+$('rings').value;
+    const points=+$('points').value;
+    const rotation=+$('rotation').value;
+    const type=$('type').value;
+    const text=$('customText').value.trim();
+    const textSize=+$('textSize').value;
+    const symbolSize=+$('symbolSize').value;
+    const symbolRadius=+$('symbolRadius').value;
+
+    $('widthVal').textContent=sw;
+    $('ringsVal').textContent=rings;
+    $('pointsVal').textContent=points;
+    $('rotationVal').textContent=rotation+'°';
+    $('textSizeVal').textContent=textSize;
+    $('symbolSizeVal').textContent=symbolSize;
+    $('symbolRadiusVal').textContent=symbolRadius;
+
+    let out=`
+    <rect id="backgroundRect" width="800" height="800" fill="${bg}"/>
+    `;
+
+    // Anillos exteriores
+    for(let i=0;i<rings;i++){
+        const r=365-i*(Math.min(210,180)/Math.max(1,rings-1));
+        out+=circle(r,i===0?1:.8);
+    }
+
+    // Divisiones
+    if($('showTicks').checked){
+        const total=points*4;
+
+        for(let i=0;i<total;i++){
+            const a=rotation+i*360/total;
+            const p1=polar(344,a);
+            const p2=polar(i%4===0?365:354,a);
+            out+=line(p1.x,p1.y,p2.x,p2.y,.8);
+        }
+    }
+
+    // Estrellas
+    if($('showStar').checked){
+
+        if(type==='hexagram'){
+            out+=triangle(245,rotation);
+            out+=triangle(245,rotation+180);
+        }
+
+        if(type==='pentagram'){
+            out+=star(points,245,2,rotation);
+        }
+
+        if(type==='elemental'){
+            out+=star(4,240,1,rotation);
+            out+=triangle(155,rotation);
+        }
+
+        if(type==='flower'){
+            out+=star(6,210,2,rotation);
+        }
+
+        if(type==='philosopher'){
+            out+=triangle(250,rotation);
+            out+=`<rect x="280" y="280" width="240" height="240"
+            transform="rotate(${rotation} 400 400)"
+            fill="none" stroke="currentColor"
+            stroke-width="var(--sw)"/>`;
+        }
+
+        if(type==='transmutation'){
+            out+=star(points,230,2,rotation);
+            out+=triangle(290,rotation);
+        }
+    }
+
+    // Flor de la vida
+    if(type==='flower'){
+        for(let i=0;i<6;i++){
+            const p=polar(105,rotation+i*60);
+            out+=`<circle cx="${p.x}" cy="${p.y}" r="105"
+            fill="none" stroke="currentColor"
+            stroke-width="var(--sw)"/>`;
+        }
+    }
+
+    // Piedra filosofal
+    if(type==='philosopher'){
+        out+=circle(120);
+        out+=circle(65);
+        out+=line(400,280,400,520);
+    }
+
+    // Transmutación
+    if(type==='transmutation'){
+        for(let i=0;i<8;i++){
+            const a=rotation+i*45;
+            const p=polar(150,a);
+            const q=polar(310,a);
+            out+=line(p.x,p.y,q.x,q.y,.5);
+        }
+        out+=circle(115);
+        out+=circle(175);
+    }
+
+    // Elemental
+    if(type==='elemental'){
+        out+=circle(100);
+        out+=line(300,400,500,400);
+        out+=line(400,300,400,500);
+    }
+
+    // Símbolos predeterminados
+    if($('showSymbols').checked){
+
+        for(let i=0;i<symbols.length;i++){
+            const p=polar(325,rotation+i*360/symbols.length-90);
+
+            out+=`<text x="${p.x}" y="${p.y}"
+            fill="currentColor"
+            font-size="20"
+            text-anchor="middle"
+            dominant-baseline="middle"
+            font-family="serif">${symbols[i]}</text>`;
+        }
+    }
+
+    // Símbolos personalizados
+    const custom=$('customSymbols').value.trim();
+
+    if(custom){
+        const list=Array.from(custom.replace(/\s+/g,' ').trim().split(' ')).filter(Boolean);
+
+        list.forEach((symbol,i)=>{
+            const angle=rotation+i*360/list.length-90;
+            const p=polar(symbolRadius,angle);
+
+            out+=`<text x="${p.x}" y="${p.y}"
+            fill="currentColor"
+            font-size="${symbolSize}"
+            text-anchor="middle"
+            dominant-baseline="middle"
+            font-family="serif">${escapeHTML(symbol)}</text>`;
+        });
+    }
+
+    // Texto siguiendo un círculo
+    if(text && $('showText').checked){
+
+        const radius=270;
+
+        const path=`
+        <path id="circularTextPath"
+        d="M 400 ${400-radius}
+        A ${radius} ${radius} 0 1 1 399.99 ${400-radius}"
+        fill="none"/>`;
+
+        out+=`
+        <defs>${path}</defs>
+        <text fill="currentColor"
+        font-size="${textSize}"
+        font-family="serif"
+        letter-spacing="4"
+        text-anchor="middle">
+            <textPath href="#circularTextPath"
+            startOffset="50%">${escapeHTML(text)}</textPath>
+        </text>`;
+    }
+
+    // Centro
+    if($('showCenter').checked){
+        out+=circle(48);
+        out+=circle(18);
+        out+=`<circle cx="400" cy="400" r="5" fill="currentColor"/>`;
+    }
+
+    svg.innerHTML=`
+    <g color="${c}" style="--sw:${sw}">
+        ${out}
+    </g>`;
+}
+
+// Selector rápido de símbolos
+function buildPicker(){
+    const picker=$('symbolPicker');
+
+    symbols.forEach(symbol=>{
+        const button=document.createElement('button');
+        button.type='button';
+        button.textContent=symbol;
+        button.style.padding='7px';
+        button.style.fontSize='18px';
+        button.style.minWidth='35px';
+
+        button.onclick=()=>{
+            const field=$('customSymbols');
+            field.value=(field.value.trim()+' '+symbol).trim();
+            draw();
+        };
+
+        picker.appendChild(button);
+    });
+}
+
+const controls=[
+    'type','color','background','width','rings','points',
+    'rotation','customText','textSize','customSymbols',
+    'symbolSize','symbolRadius','showStar','showSymbols',
+    'showTicks','showCenter','showText'
+];
+
+controls.forEach(id=>{
+    $(id).addEventListener('input',draw);
+    $(id).addEventListener('change',draw);
+});
+
+$('reset').onclick=()=>{
+    Object.entries(defaults).forEach(([key,value])=>{
+        const el=$(key);
+        if(el.type==='checkbox')el.checked=value;
+        else el.value=value;
+    });
+    draw();
+};
+
+$('random').onclick=()=>{
+    $('type').value=[
+        'transmutation','pentagram','hexagram',
+        'elemental','flower','philosopher'
+    ][Math.floor(Math.random()*6)];
+
+    $('color').value=[
+        '#d5ad65','#d04b4b','#55a9d9',
+        '#b58be0','#eeeeee','#53bd8c'
+    ][Math.floor(Math.random()*6)];
+
+    $('rings').value=2+Math.floor(Math.random()*6);
+    $('points').value=3+Math.floor(Math.random()*10);
+    $('rotation').value=Math.floor(Math.random()*360);
+    draw();
+};
+
+function getSVG(transparent=true){
+    const clone=svg.cloneNode(true);
+
+    clone.setAttribute('xmlns','http://www.w3.org/2000/svg');
+    clone.setAttribute('width','2000');
+    clone.setAttribute('height','2000');
+
+    if(transparent){
+        const background=clone.querySelector('#backgroundRect');
+        if(background)background.remove();
+    }
+
+    return new XMLSerializer().serializeToString(clone);
+}
+
+function download(blob,name){
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+
+    a.href=url;
+    a.download=name;
+    a.click();
+
+    setTimeout(()=>URL.revokeObjectURL(url),1500);
+}
+
+// PNG con fondo transparente
+$('downloadPNG').onclick=()=>{
+
+    const data=getSVG(true);
+
+    const url=URL.createObjectURL(
+        new Blob([data],{type:'image/svg+xml;charset=utf-8'})
+    );
+
+    const img=new Image();
+
+    img.onload=()=>{
+        const canvas=document.createElement('canvas');
+        canvas.width=2000;
+        canvas.height=2000;
+
+        const ctx=canvas.getContext('2d');
+        ctx.clearRect(0,0,2000,2000);
+        ctx.drawImage(img,0,0,2000,2000);
+
+        canvas.toBlob(blob=>{
+            if(blob){
+                download(blob,'circulo-alquimico-transparente.png');
+            }
+            URL.revokeObjectURL(url);
+        },'image/png');
+    };
+
+    img.onerror=()=>{
+        URL.revokeObjectURL(url);
+        alert('No se pudo exportar la imagen.');
+    };
+
+    img.src=url;
+};
+
+// SVG también transparente
+$('downloadSVG').onclick=()=>{
+    download(
+        new Blob([getSVG(true)],{type:'image/svg+xml;charset=utf-8'}),
+        'circulo-alquimico.svg'
+    );
+};
+
+buildPicker();
+draw();
+</script>
+
+</body>
+</html>
